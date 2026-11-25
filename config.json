@@ -5,7 +5,7 @@
   "cooldownHours": 4,
   "detail": true,
   "detailMaxPerRun": 3,
-  "maxRuntimeSec": 300,
+  "maxRuntimeSec": 540,
   "fxFallback": 7.1,
   "chromePath": "",
 
