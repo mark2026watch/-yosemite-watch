@@ -46,7 +46,7 @@
       "rooms": 1,
       "nights": 1,
       "minPrice": 0,
-      "maxPrice": 0,
+      "maxPrice": 800,
       "dates": [
         { "from": "2027-05-25", "nights": 1 },
         { "from": "2027-05-26", "nights": 1 }
