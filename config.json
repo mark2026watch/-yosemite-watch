@@ -1,0 +1,27 @@
+{
+  "_说明": "云端监控配置。改完直接提交到 GitHub，下一次定时任务就生效。",
+  "_酒店代码": "M=阿赫瓦尼 Y=优胜美地山谷旅馆 D=库里村 H=自助营地 T=图奥勒米草甸",
+
+  "cooldownHours": 4,
+  "detail": true,
+  "detailMaxPerRun": 3,
+  "maxRuntimeSec": 300,
+  "fxFallback": 7.1,
+  "chromePath": "",
+
+  "tasks": [
+    {
+      "prop": "Y",
+      "guest": "Cornock / Mark",
+      "adults": 2,
+      "children": 0,
+      "rooms": 1,
+      "nights": 1,
+      "minPrice": 0,
+      "maxPrice": 0,
+      "ranges": [
+        { "from": "2027-06-11", "to": "2027-06-14", "nights": 1 }
+      ]
+    }
+  ]
+}
