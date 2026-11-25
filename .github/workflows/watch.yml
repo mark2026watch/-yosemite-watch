@@ -1,0 +1,66 @@
+name: 房态监控
+
+on:
+  schedule:
+    # 每 15 分钟一次（UTC）。GitHub 可能延迟几分钟，属于正常现象。
+    - cron: '2,17,32,47 * * * *'
+  workflow_dispatch:        # 也可以在网页上手动点一次
+
+# 同一时间只跑一个，避免两次任务抢浏览器和 state.json
+concurrency:
+  group: yosemite-watch
+  cancel-in-progress: false
+
+permissions:
+  contents: write           # 需要把 state.json 提交回去（去重用）
+
+jobs:
+  watch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+
+    steps:
+      - name: 取代码
+        uses: actions/checkout@v4
+
+      - name: 装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 装系统的虚拟屏幕与中文字体
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb fonts-noto-cjk
+
+      - name: 装 Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: 查询并推送
+        env:
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+          TZ: Asia/Shanghai
+        run: |
+          xvfb-run -a --server-args="-screen 0 1400x900x24" node cli.js --verbose
+
+      - name: 保存状态（去重记录）
+        if: always()
+        run: |
+          git config user.name "watch-bot"
+          git config user.email "watch-bot@users.noreply.github.com"
+          if [ -f state.json ]; then
+            git add -f state.json
+            if ! git diff --cached --quiet; then
+              git commit -m "chore: update state [skip ci]"
+              git pull --rebase --autostash origin ${GITHUB_REF_NAME} || true
+              git push || echo "push 失败（下次运行会再试）"
+            else
+              echo "状态未变化"
+            fi
+          else
+            echo "没有 state.json"
+          fi
