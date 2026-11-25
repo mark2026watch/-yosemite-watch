@@ -2,9 +2,9 @@ name: 房态监控
 
 on:
   schedule:
-    # 每 5 分钟一次（UTC），这是 GitHub 允许的最快频率。
-    # 高峰期可能延迟几分钟；如果被平台判定过频，退回 '2,17,32,47 * * * *'（每15分钟）。
-    - cron: '*/5 * * * *'
+    # 保险绳：每 15 分钟一次。主节奏由「链式触发」（最后一步）负责，约每 5 分钟一轮。
+    # GitHub 定时器高峰期会延迟/跳过，链式触发不受平台调度器影响。
+    - cron: '3,18,33,48 * * * *'
   workflow_dispatch:        # 也可以在网页上手动点一次
 
 # 同一时间只跑一个，避免两次任务抢浏览器和 state.json
@@ -14,6 +14,7 @@ concurrency:
 
 permissions:
   contents: write           # 需要把 state.json 提交回去（去重用）
+  actions: write            # 链式触发：跑完自动叫醒下一轮
 
 jobs:
   watch:
@@ -65,3 +66,18 @@ jobs:
           else
             echo "没有 state.json"
           fi
+
+      - name: 链式触发下一轮（自叫醒，约 5 分钟一轮）
+        if: always()
+        run: |
+          sleep 240
+          # 急停开关：在 state.json 里加 "haltChain": true 即可停止链式触发
+          if [ -f state.json ] && grep -q '"haltChain"[[:space:]]*:[[:space:]]*true' state.json; then
+            echo "检测到 haltChain=true，停止链式触发"
+            exit 0
+          fi
+          curl -sS -o /dev/null -w "链式触发 HTTP %{http_code}\n" -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/watch.yml/dispatches" \
+            -d '{"ref":"main"}'
