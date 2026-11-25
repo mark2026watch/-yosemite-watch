@@ -255,7 +255,7 @@ async function fetchInventory(cdp, prop, startDate, endDate) {
 /** 房型 + 价格明细 */
 async function fetchDetail(cdp, prop, checkIn, checkOut, adults, children, rooms) {
   let lastErr = '';
-  for (let attempt = 0; attempt < 2; attempt++) {
+  for (let attempt = 0; attempt < 3; attempt++) {
     try {
       if (attempt > 0) await goHome(cdp);
       await waitReady(cdp, 20000).catch(() => { });
@@ -279,7 +279,7 @@ async function fetchDetail(cdp, prop, checkIn, checkOut, adults, children, rooms
         let target = r.url || '';
         if (/PleaseWait/i.test(target)) {
           target = '';
-          for (let i = 0; i < 12; i++) {
+          for (let i = 0; i < 18; i++) {
             await new Promise(x => setTimeout(x, 900));
             const p = await fetch('/Yosemite/Utility/Ajax_CheckInterstitialStatus', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'interstitialCompletedMessage=' + encodeURIComponent('Thank you for waiting.  We are now transferring you to your search results.') });
             const j = await p.json().catch(() => null);
@@ -300,7 +300,11 @@ async function fetchDetail(cdp, prop, checkIn, checkOut, adults, children, rooms
         return JSON.stringify({ items });
       })()`;
       const out = JSON.parse(await cdp.eval(expr, 70000));
-      return Array.isArray(out.items) ? out.items : [];
+      const items = Array.isArray(out.items) ? out.items : [];
+      /* 0 个房型可能是页面竞态：非最后一次尝试时视为失败自动重查 */
+      if (items.length || attempt === 2) return items;
+      lastErr = '结果页 0 个房型（第 ' + (attempt + 1) + ' 次尝试）';
+      await sleep(2500);
     } catch (er) { lastErr = er.message; await sleep(1200); }
   }
   throw new Error('明细查询失败: ' + lastErr);
@@ -376,9 +380,25 @@ async function main() {
   const hits = [];
   let okCount = 0, failCount = 0;
   try {
-    browser = launchBrowser();
-    cdp = await connectCdp();
-    await waitReady(cdp, 60000);
+    /* 浏览器启动 + 页面就绪，最多试 3 次（网络瞬断时自动重建，不再直接失败） */
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        if (attempt > 1) {
+          console.error(`[浏览器] 第 ${attempt}/3 次尝试：关闭旧实例后重建`);
+          try { cdp && cdp.ws && cdp.ws.close(); } catch (e) { }
+          try { browser && browser.proc && browser.proc.kill('SIGKILL'); } catch (e) { }
+          await sleep(3000);
+        }
+        browser = launchBrowser();
+        cdp = await connectCdp();
+        await waitReady(cdp, 60000);
+        break;
+      } catch (e) {
+        if (attempt === 3) throw e;
+        console.error('[浏览器] ' + e.message + ' → 自动重试');
+        await sleep(2000);
+      }
+    }
     log('[浏览器] 页面就绪');
 
     /* 1) 每个酒店一次库存请求 */
