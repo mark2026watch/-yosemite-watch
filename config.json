@@ -39,6 +39,20 @@
       ]
     },
     {
+      "prop": "M",
+      "guest": "Rice / William",
+      "adults": 2,
+      "children": 0,
+      "rooms": 1,
+      "nights": 1,
+      "minPrice": 0,
+      "maxPrice": 0,
+      "dates": [
+        { "from": "2027-05-25", "nights": 1 },
+        { "from": "2027-05-26", "nights": 1 }
+      ]
+    },
+    {
       "prop": "Y",
       "guest": "Selvidge / Gloria",
       "adults": 2,
