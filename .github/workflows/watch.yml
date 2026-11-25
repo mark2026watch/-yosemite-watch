@@ -19,7 +19,8 @@ permissions:
 jobs:
   watch:
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    # 必须 > 查询(最长540s) + 退避睡眠(600s) + 环境安装(~60s)，否则睡眠中被超时掐断、链条断裂
+    timeout-minutes: 25
 
     steps:
       - name: 取代码
@@ -73,8 +74,8 @@ jobs:
         run: |
           # 自适应退避：查询失败（疑似官网限速）→ 等 15 分钟养伤；成功 → 5 分钟一轮
           if [ "${{ steps.query.outcome }}" != "success" ]; then
-            echo "本轮查询失败，疑似官网限速，退避 15 分钟后再试"
-            sleep 780
+            echo "本轮查询失败，疑似官网限速，退避 10 分钟后再试"
+            sleep 600
           else
             sleep 240
           fi
