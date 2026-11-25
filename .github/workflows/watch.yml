@@ -42,6 +42,7 @@ jobs:
           chrome-version: stable
 
       - name: 查询并推送
+        id: query
         env:
           WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
@@ -67,10 +68,16 @@ jobs:
             echo "没有 state.json"
           fi
 
-      - name: 链式触发下一轮（自叫醒，约 5 分钟一轮）
+      - name: 链式触发下一轮（自适应节奏）
         if: always()
         run: |
-          sleep 240
+          # 自适应退避：查询失败（疑似官网限速）→ 等 15 分钟养伤；成功 → 5 分钟一轮
+          if [ "${{ steps.query.outcome }}" != "success" ]; then
+            echo "本轮查询失败，疑似官网限速，退避 15 分钟后再试"
+            sleep 780
+          else
+            sleep 240
+          fi
           # 急停开关：在 state.json 里加 "haltChain": true 即可停止链式触发
           if [ -f state.json ] && grep -q '"haltChain"[[:space:]]*:[[:space:]]*true' state.json; then
             echo "检测到 haltChain=true，停止链式触发"
