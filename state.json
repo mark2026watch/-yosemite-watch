@@ -1,14 +1,14 @@
 {
   "notified": {},
   "hits": [],
-  "runs": 2,
+  "runs": 3,
   "fx": 6.678179,
-  "lastRun": 1795570151776,
+  "lastRun": 1795570366875,
   "lastResult": {
-    "ok": 1,
+    "ok": 3,
     "fail": 0,
     "hits": 0,
     "sent": 0,
-    "ms": 3073
+    "ms": 11111
   }
 }
