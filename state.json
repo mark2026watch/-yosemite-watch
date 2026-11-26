@@ -1,6 +1,6 @@
 {
   "notified": {
-    "M|2027-05-26|2027-05-27|Any Available Unit": 1795666349960
+    "M|2027-05-26|2027-05-27|Any Available Unit": 1795681041717
   },
   "hits": [
     {
@@ -32,16 +32,26 @@
       "roomType": "Any Available Unit",
       "price": "",
       "remaining": 1
+    },
+    {
+      "prop": "M",
+      "checkIn": "2027-05-26",
+      "checkOut": "2027-05-27",
+      "nights": 1,
+      "guest": "Rice / William",
+      "roomType": "Any Available Unit",
+      "price": "",
+      "remaining": 1
     }
   ],
-  "runs": 55,
+  "runs": 56,
   "fx": 6.678179,
-  "lastRun": 1795680736392,
+  "lastRun": 1795681043368,
   "lastResult": {
     "ok": 3,
     "fail": 0,
     "hits": 1,
-    "sent": 0,
-    "ms": 16181
+    "sent": 1,
+    "ms": 32004
   }
 }
