@@ -452,6 +452,9 @@ async function main() {
       if (usd > 0) {
         if (min && usd < min) continue;
         if (max && usd > max) continue;
+      } else if (min || max) {
+        /* 价格阀开启但价格未知：无价格消息没有过滤意义，跳过推送（宁缺毋滥） */
+        continue;
       }
       const key = `${h.prop}|${h.checkIn}|${h.checkOut}|${h.roomType}`;
       const old = state.notified[key] || 0;
