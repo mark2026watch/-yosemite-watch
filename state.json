@@ -1,8 +1,41 @@
 {
   "notified": {
-    "M|2027-05-26|2027-05-27|Any Available Unit": 1795681041717
+    "M|2027-05-26|2027-05-27|Any Available Unit": 1795681041717,
+    "Y|2027-05-24|2027-05-25|Any Available Unit": 1795806200805,
+    "Y|2027-05-25|2027-05-26|Any Available Unit": 1795806200805,
+    "Y|2027-05-26|2027-05-27|Any Available Unit": 1795806200805
   },
   "hits": [
+    {
+      "prop": "Y",
+      "checkIn": "2027-05-24",
+      "checkOut": "2027-05-25",
+      "nights": 1,
+      "guest": "RAMOS / PAUL | Selvidge / Gloria",
+      "roomType": "Any Available Unit",
+      "price": "",
+      "remaining": 2
+    },
+    {
+      "prop": "Y",
+      "checkIn": "2027-05-25",
+      "checkOut": "2027-05-26",
+      "nights": 1,
+      "guest": "RAMOS / PAUL | Selvidge / Gloria",
+      "roomType": "Any Available Unit",
+      "price": "",
+      "remaining": 2
+    },
+    {
+      "prop": "Y",
+      "checkIn": "2027-05-26",
+      "checkOut": "2027-05-27",
+      "nights": 1,
+      "guest": "RAMOS / PAUL | Selvidge / Gloria",
+      "roomType": "Any Available Unit",
+      "price": "",
+      "remaining": 2
+    },
     {
       "prop": "M",
       "checkIn": "2027-05-26",
@@ -44,14 +77,14 @@
       "remaining": 1
     }
   ],
-  "runs": 135,
+  "runs": 136,
   "fx": 6.674963,
-  "lastRun": 1795804163898,
+  "lastRun": 1795806202475,
   "lastResult": {
     "ok": 3,
     "fail": 0,
-    "hits": 0,
-    "sent": 0,
-    "ms": 8338
+    "hits": 3,
+    "sent": 3,
+    "ms": 60666
   }
 }
