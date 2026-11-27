@@ -44,14 +44,14 @@
       "remaining": 1
     }
   ],
-  "runs": 122,
+  "runs": 123,
   "fx": 6.674963,
-  "lastRun": 1795782392774,
+  "lastRun": 1795783587477,
   "lastResult": {
-    "ok": 3,
-    "fail": 0,
-    "hits": 1,
+    "ok": 0,
+    "fail": 3,
+    "hits": 0,
     "sent": 0,
-    "ms": 23559
+    "ms": 58018
   }
 }
